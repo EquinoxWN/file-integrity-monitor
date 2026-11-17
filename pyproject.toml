@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "file-integrity-monitor"
+version = "0.1.0"
+description = "Record a sealed baseline of critical Linux files and detect changes in real time (inotify) and by scheduled full scans."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-timeout>=2.3",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "pip-audit>=2.7",
+]
+
+[project.scripts]
+fim = "file_integrity_monitor.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+file_integrity_monitor = ["policies/*.toml", "py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["tests"]
+addopts = "-m 'not linux' --basetemp=.tmp/pytest"
+timeout = 120
+markers = [
+    "linux: needs Linux (inotify, symlinks, real chmod/chown); runs in CI with `pytest -m linux`",
+]
+
+[tool.ruff]
+line-length = 100
+extend-exclude = [".tmp", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "S", "SIM", "RUF", "N", "C4", "PT", "RET", "PIE", "PERF", "BLE", "E722"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S108", "S311", "PT018"]
+
+[tool.mypy]
+strict = true
+files = ["src", "tests", "scripts"]

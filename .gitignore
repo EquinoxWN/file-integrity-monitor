@@ -1,0 +1,25 @@
+.DS_Store
+.env
+.idea/
+.vscode/
+*.log
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+.gopath/
+
+# Claude Code files (never committed)
+.claude/
+CLAUDE.local.md
+CLAUDE.md
+.mcp.json
+
+# Local tool caches, scratch and demo output (kept inside the repo)
+.tmp/
+.mypy_cache/
+*.json.tmp

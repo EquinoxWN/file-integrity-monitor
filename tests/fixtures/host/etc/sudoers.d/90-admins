@@ -1,0 +1,2 @@
+# admins need a password
+%sudo ALL=(ALL:ALL) ALL

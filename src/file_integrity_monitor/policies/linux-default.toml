@@ -1,0 +1,57 @@
+# Default watch policy for a Linux host: binaries, configuration, scheduled jobs and SSH keys.
+# A path belongs to the most severe group that covers it. "recursive = false" covers a matched
+# path and, when it is a directory, its direct children only.
+version = 1
+
+[[group]]
+name = "ssh-keys"
+severity = "critical"
+paths = ["/root/.ssh", "/home/*/.ssh", "/etc/ssh"]
+recursive = true
+
+[[group]]
+name = "accounts"
+severity = "critical"
+paths = ["/etc/passwd", "/etc/shadow", "/etc/group", "/etc/gshadow", "/etc/sudoers", "/etc/sudoers.d"]
+recursive = false
+
+[[group]]
+name = "cron"
+severity = "high"
+paths = [
+  "/etc/crontab",
+  "/etc/cron.d",
+  "/etc/cron.hourly",
+  "/etc/cron.daily",
+  "/etc/cron.weekly",
+  "/etc/cron.monthly",
+  "/var/spool/cron",
+  "/etc/systemd/system",
+]
+recursive = true
+exclude = ["*.swp", "*~"]
+
+[[group]]
+name = "binaries"
+severity = "high"
+paths = ["/usr/bin", "/usr/sbin", "/usr/local/bin", "/usr/local/sbin", "/bin", "/sbin"]
+recursive = false
+
+[[group]]
+name = "configs"
+severity = "medium"
+paths = [
+  "/etc/pam.d",
+  "/etc/security",
+  "/etc/hosts",
+  "/etc/resolv.conf",
+  "/etc/nsswitch.conf",
+  "/etc/ld.so.preload",
+  "/etc/ld.so.conf",
+  "/etc/ld.so.conf.d",
+  "/etc/profile",
+  "/etc/profile.d",
+  "/etc/environment",
+]
+recursive = true
+exclude = ["*.swp", "*~"]
