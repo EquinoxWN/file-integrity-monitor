@@ -25,13 +25,26 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.12"
-      - run: make ci
+      - run: make setup lint
+      - run: make test PYTEST_ARGS="--junitxml=.tmp/junit.xml"
       - name: Known-vulnerability audit
         run: make audit
       # Real inotify watches, symlinks, FIFOs and an unreadable directory, as a normal user.
       - name: Linux-only tests (pytest -m linux)
-        run: make test-linux
+        run: make test-linux PYTEST_ARGS="--junitxml=.tmp/junit-linux.xml"
       - name: Demo with the inotify backend (annotation)
         run: |
           python scripts/demo.py --backend inotify | tee demo.txt
           echo "::notice title=fim demo (inotify, ubuntu-latest)::$(tail -n 1 demo.txt)"
+      - name: Failed tests (annotations)
+        if: failure()
+        run: |
+          python - <<'PY'
+          import pathlib
+          import xml.etree.ElementTree as ET
+          for report in pathlib.Path(".tmp").glob("junit*.xml"):
+              for case in ET.parse(report).iter("testcase"):
+                  for bad in [*case.iter("failure"), *case.iter("error")]:
+                      msg = " ".join((bad.get("message") or "").split())[:900]
+                      print(f"::error title={case.get('name')}::{msg}")
+          PY

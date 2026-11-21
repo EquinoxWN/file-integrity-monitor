@@ -11,11 +11,11 @@ lint:
 
 # Portable tests on a copy of the fixture host tree (Linux-only tests are deselected).
 test:
-	$(PY) -m pytest -q -rs
+	$(PY) -m pytest -q -rs $(PYTEST_ARGS)
 
 # Real inotify, symlinks, FIFOs and unreadable directories (Linux only; CI runs this).
 test-linux:
-	$(PY) -m pytest -q -rs -m linux
+	$(PY) -m pytest -q -rs -m linux $(PYTEST_ARGS)
 
 # Baseline, live watch and simulated tampering on a copy of the fixture under .tmp/demo.
 demo:
